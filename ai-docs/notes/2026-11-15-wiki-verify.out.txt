@@ -1,0 +1,169 @@
+== check-good
+$ python qw.py check good.py --expect-eol lf
+{
+  "ok": true,
+  "files": {
+    "good.py": {
+      "cr": 0,
+      "lf": 1,
+      "eol": "lf",
+      "controls": [],
+      "bom": false,
+      "trailing_space_lines": [],
+      "lost_backslash_u_lines": [],
+      "issues": []
+    }
+  }
+}
+exit 0
+
+== check-crlf
+$ python qw.py check crlf.py --expect-eol lf
+{
+  "ok": false,
+  "files": {
+    "crlf.py": {
+      "cr": 2,
+      "lf": 2,
+      "eol": "crlf",
+      "controls": [],
+      "bom": false,
+      "trailing_space_lines": [],
+      "lost_backslash_u_lines": [],
+      "issues": [
+        "eol-not-lf"
+      ]
+    }
+  }
+}
+exit 1
+
+== check-bom
+$ python qw.py check bom.md
+{
+  "ok": false,
+  "files": {
+    "bom.md": {
+      "cr": 0,
+      "lf": 1,
+      "eol": "lf",
+      "controls": [],
+      "bom": true,
+      "trailing_space_lines": [],
+      "lost_backslash_u_lines": [],
+      "issues": [
+        "bom"
+      ]
+    }
+  }
+}
+exit 1
+
+== check-escape
+$ python qw.py check esc.py
+{
+  "ok": false,
+  "files": {
+    "esc.py": {
+      "cr": 0,
+      "lf": 1,
+      "eol": "lf",
+      "controls": [
+        {
+          "line": 1,
+          "byte": 12
+        },
+        {
+          "line": 1,
+          "byte": 8
+        }
+      ],
+      "bom": false,
+      "trailing_space_lines": [],
+      "lost_backslash_u_lines": [],
+      "issues": [
+        "control-bytes"
+      ]
+    }
+  }
+}
+exit 1
+
+== wait-done
+$ python qw.py wait job.log --done DONE --fail Traceback|ERROR --deadline 5
+{
+  "ok": true,
+  "result": "done",
+  "waited_s": 0.0
+}
+exit 0
+
+== wait-old-fail-line
+$ python qw.py wait bad.log --done DONE --fail Traceback|ERROR --deadline 2 --interval 1
+{
+  "ok": false,
+  "result": "deadline",
+  "waited_s": 2.0,
+  "hint": "check the job is alive (qw.py pid) before waiting again"
+}
+exit 1
+
+== wait-new-fail-line
+$ python qw.py wait run.log --done DONE --fail Traceback|ERROR --deadline 10 --interval 1
+{
+  "ok": false,
+  "result": "failed",
+  "new_fail_lines": 1,
+  "waited_s": 2.0
+}
+exit 1
+
+== wait-deadline
+$ python qw.py wait bad.log --done DONE --fail NEVER --deadline 2 --interval 1
+{
+  "ok": false,
+  "result": "deadline",
+  "waited_s": 2.0,
+  "hint": "check the job is alive (qw.py pid) before waiting again"
+}
+exit 1
+
+== pid-none
+$ python qw.py pid no-such-command-xyz 123
+{
+  "ok": false,
+  "pattern": "no-such-command-xyz 123",
+  "matches": [],
+  "skipped": [],
+  "note": "kill only these pids, after checking start time; never by image name"
+}
+exit 1
+
+== hook-kill-image
+quirkwright: refused a kill by image name; it ends other sessions' jobs and servers. Find the pid with qw.py pid "<full command>" and kill that pid.
+exit 2
+
+== hook-kill-name
+quirkwright: refused a kill by image name; it ends other sessions' jobs and servers. Find the pid with qw.py pid "<full command>" and kill that pid.
+exit 2
+
+== hook-kill-pid
+
+exit 0
+
+== hook-check-crlf
+
+exit 0
+
+== hook-check-escape
+{"hookSpecificOutput": {"hookEventName": "PostToolUse", "additionalContext": "quirkwright: esc.py has control-bytes; fix before relying on it."}}
+exit 0
+
+== hook-check-bom
+{"hookSpecificOutput": {"hookEventName": "PostToolUse", "additionalContext": "quirkwright: bom.md has bom; fix before relying on it."}}
+exit 0
+
+== hook-check-good
+
+exit 0
+

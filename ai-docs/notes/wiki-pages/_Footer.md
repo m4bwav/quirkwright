@@ -1,0 +1,1 @@
+This wiki describes quirkwright 0.2.1 and was last updated on 2026-11-15. The plugin is MIT licensed. Report problems in the [issues](https://github.com/m4bwav/quirkwright/issues). No package registry applies: get it from [GitHub](https://github.com/m4bwav/quirkwright).

@@ -6,4 +6,4 @@
 - 2026-11-15 step G: working notes (design, harvest, prior art, baseline, prove) moved to the private sidecar's ai-docs/; leak test now checks ai-docs/ too. qw.py pid matches Git Bash's quoted exe command lines (test added, 23 pass). esc-write-backslash-u eval now checks behaviour, not a literal. History still holds the old notes: squash before the repo goes public.
 - 2026-11-15 step H: renamed hostwright to quirkwright (repo, skill, qw.py, QUIRKWRIGHT_HOME): 'hostwright' is an active product's GitHub org and site; quirkwright had no repos or user on GitHub.
 - 2026-11-15: 0.2.0 released (public, fresh repo m4bwav/quirkwright), installed. Wiki waits on the first page.
-- 2026-11-15: 0.2.1: hooks.json ships kill guard + byte check on; heredoc hook stays off. Wiki pinned to 0.2.1.
+- 2026-11-15: 0.2.1 released (kill guard + byte check hooks on, heredoc off), installed. Wiki pages written and verified, not pushed: no wiki repo yet (first page not saved). SKILL.md hooks line fixed (said shipped off).

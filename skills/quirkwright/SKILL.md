@@ -23,7 +23,7 @@ The agent's host on Windows: what the shell tools, file tools and processes do t
 
 `QW doctor` (read-only) reports live shells, a `python3` Store stub, cwd case vs MCP keys, path headroom and stdout encoding. Run it once in a new environment or when something above misbehaves.
 
-Hooks that enforce rules 1 and 2 and the byte check are in the plugin's `hooks/` folder, shipped off.
+Hooks in the plugin's `hooks/` folder: the kill guard (rule 2) and the byte check are on; the heredoc warning (rule 1) ships off.
 
 Neighbours: worktrees and the live-facts log are chainwright; installing Git Bash, pwsh or Python is evergreen-setup; MCP config and persistent shells are desktop-commander; token habits are tokenwright.
 
