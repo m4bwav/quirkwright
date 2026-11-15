@@ -14,7 +14,7 @@ quirkwright is one skill plus a small standard-library script, `qw.py`. Each rul
   - `pid "<command>"`: real Windows pids for a command line, with start times, wait loops set aside.
   - `wait <log> --done RE --fail RE --deadline S`: waits on a log and stops on failure or deadline, never forever.
   - `doctor [--plugin NAME]`: live shells, the `python3` Store stub, path case, path headroom, stdout encoding, a plugin's installed version.
-- **Hooks** ([hooks/](hooks/README.md)), shipped **off**: refuse a kill by image name, warn on backslashes in a Python heredoc, byte-check every Write and Edit.
+- **Hooks** ([hooks/](hooks/README.md)): on by default, refuse a kill by image name and byte-check every Write and Edit (warns only); the warning on backslashes in a Python heredoc ships off.
 
 ## Install
 

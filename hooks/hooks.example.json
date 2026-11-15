@@ -1,12 +1,16 @@
 {
-  "_note": "OFF. Rename to hooks.json only after the owner agrees. Claude Code loads hooks/hooks.json from an installed plugin; this file name is ignored.",
+  "_note": "OFF. The heredoc warning stays off until the owner asks for it. To enable it, copy this entry into hooks.json and reinstall. Claude Code ignores this file name.",
   "hooks": {
     "PreToolUse": [
-      {"matcher": "Bash|PowerShell", "hooks": [{"type": "command", "command": "py -3 \"${CLAUDE_PLUGIN_ROOT}/hooks/guards.py\" kill"}]},
-      {"matcher": "Bash", "hooks": [{"type": "command", "command": "py -3 \"${CLAUDE_PLUGIN_ROOT}/hooks/guards.py\" heredoc"}]}
-    ],
-    "PostToolUse": [
-      {"matcher": "Write|Edit", "hooks": [{"type": "command", "command": "py -3 \"${CLAUDE_PLUGIN_ROOT}/hooks/guards.py\" check"}]}
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "py -3 \"${CLAUDE_PLUGIN_ROOT}/hooks/guards.py\" heredoc"
+          }
+        ]
+      }
     ]
   }
 }

@@ -34,9 +34,15 @@ class HeredocTests(unittest.TestCase):
         self.assertIsNone(guards.heredoc_verdict(cmd))
 
 
-class OffByDefault(unittest.TestCase):
-    def test_no_active_hooks_json(self):
-        self.assertFalse(os.path.exists(os.path.join(HERE, "..", "hooks", "hooks.json")))
+class ShippedHooks(unittest.TestCase):
+    def test_kill_and_check_on_heredoc_off(self):
+        import json
+        with open(os.path.join(HERE, "..", "hooks", "hooks.json")) as f:
+            data = json.load(f)
+        cmds = [h["command"] for ev in data["hooks"].values() for m in ev for h in m["hooks"]]
+        self.assertTrue(any(c.endswith(" kill") for c in cmds))
+        self.assertTrue(any(c.endswith(" check") for c in cmds))
+        self.assertFalse(any("heredoc" in c for c in cmds))
 
 
 if __name__ == "__main__":
