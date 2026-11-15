@@ -2,6 +2,10 @@
 
 Every change to [SKILL.md](SKILL.md) and its scripts, with the reason. Newest first.
 
+## C-003 · 2026-11-15 · 0.2.1 · two hooks on
+- `hooks/hooks.json` ships the kill guard (blocks kill by image name) and the byte check on Write/Edit (warns only). The heredoc warning stays off in `hooks.example.json`.
+- because: the owner agreed to these two hooks and declined the heredoc one.
+
 ## C-002 · 2026-11-15 · 0.2.0 · first public release
 - Renamed from the working name hostwright (an active project owns that name); `qw.py`, `QUIRKWRIGHT_HOME`.
 - `qw.py pid` matches Git Bash's quoted exe command lines (`"...sleep.exe" 60` matches `sleep 60`).

@@ -1,6 +1,6 @@
-# quirkwright hooks (off)
+# quirkwright hooks
 
-These hooks are built and tested but **not enabled**. The plugin ships `hooks.example.json`, which Claude Code ignores; they stay off until the owner agrees to turn them on.
+Since 0.2.1 the plugin ships `hooks.json` with two hooks on: the kill guard and the byte check. The heredoc warning stays off in `hooks.example.json`.
 
 | Mode | Event | Does |
 |---|---|---|
@@ -8,4 +8,4 @@ These hooks are built and tested but **not enabled**. The plugin ships `hooks.ex
 | `guards.py heredoc` | PreToolUse, Bash | Adds a warning when a heredoc feeding Python carries a backslash. Never blocks. |
 | `guards.py check` | PostToolUse, Write and Edit | Runs `qw.py check` on the written file and reports CR, control bytes, BOM, half-decoded escapes. Never blocks. |
 
-To turn them on: rename `hooks.example.json` to `hooks.json` and reinstall the plugin, or copy the entries into `~/.claude/settings.json` with the plugin path written out. Tests: `tests/test_hooks.py`.
+To turn the heredoc warning on: copy its entry from `hooks.example.json` into `hooks.json` and reinstall the plugin. To turn a hook off, remove its entry from `hooks.json`. Tests: `tests/test_hooks.py`.
