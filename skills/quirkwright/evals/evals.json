@@ -1,0 +1,354 @@
+{
+  "skill": "quirkwright",
+  "_format": "skill-creator evals.json plus evergreen fields (kind, decoy, evidence, baseline). baseline = bare-model result 2026-11-15, see ai-docs/notes/baseline.md. Each case works only in its scratch folder.",
+  "evals": [
+    {
+      "id": "esc-heredoc-backslash",
+      "kind": "action",
+      "prompt": "In <TMP>/qw-evals/esc-heredoc-backslash/ write split.py that splits the path C:\\Users\\demo\\file.txt on backslashes and prints the parts, then run it.",
+      "expectations": [
+        "the task is done and the evidence below holds, checked outside the transcript"
+      ],
+      "evidence": {
+        "type": "file-or-command",
+        "check": "split.py contains a doubled backslash in the string literal (or chr(92)); running it prints 4 parts; exit 0"
+      },
+      "baseline": "fail",
+      "runs": 3
+    },
+    {
+      "id": "esc-pypath-control-bytes",
+      "kind": "action",
+      "prompt": "Write a small Python job that saves the folder D:\\data\\video\\final into <TMP>/qw-evals/esc-pypath-control-bytes/cfg.txt so another tool can read it.",
+      "expectations": [
+        "the task is done and the evidence below holds, checked outside the transcript"
+      ],
+      "evidence": {
+        "type": "file-or-command",
+        "check": "cfg.txt has zero bytes below 32 except TAB/LF/CR and holds the path exactly"
+      },
+      "baseline": "fail",
+      "runs": 3
+    },
+    {
+      "id": "esc-codegen-newline",
+      "kind": "action",
+      "prompt": "Generate <TMP>/qw-evals/esc-codegen-newline/gen.py from a Python script; gen.py must print two lines, a and b, from one print call with an escaped newline.",
+      "expectations": [
+        "the task is done and the evidence below holds, checked outside the transcript"
+      ],
+      "evidence": {
+        "type": "file-or-command",
+        "check": "python gen.py exits 0 and prints a, b; gen.py source holds a backslash-n escape inside one line"
+      },
+      "baseline": "fail",
+      "runs": 3
+    },
+    {
+      "id": "esc-write-backslash-u",
+      "kind": "action",
+      "prompt": "Write <TMP>/qw-evals/esc-write-backslash-u/escape.js exporting a function that replaces < with its JSON unicode escape so JSON can sit in a script tag.",
+      "expectations": [
+        "the task is done and the evidence below holds, checked outside the transcript"
+      ],
+      "evidence": {
+        "type": "file-or-command",
+        "check": "calling the exported function on '<b>' returns text holding the six characters backslash, u, 0, 0, 3, c in place of < (run it with node); how the code builds the backslash does not matter"
+      },
+      "baseline": "fail",
+      "runs": 3
+    },
+    {
+      "id": "esc-msys-pathconv",
+      "kind": "action",
+      "prompt": "From the shell, run python -c 'import sys;print(sys.argv[1:])' with the single argument /rerun and save the output to <TMP>/qw-evals/esc-msys-pathconv/argv.txt.",
+      "expectations": [
+        "the task is done and the evidence below holds, checked outside the transcript"
+      ],
+      "evidence": {
+        "type": "file-or-command",
+        "check": "argv.txt holds ['/rerun'], not a Program Files path"
+      },
+      "baseline": "fail",
+      "runs": 3
+    },
+    {
+      "id": "eol-python-textmode",
+      "kind": "action",
+      "prompt": "<TMP>/qw-evals/eol-python-textmode/t.txt is an LF file. With a Python one-liner, uppercase the a on line 1.",
+      "expectations": [
+        "the task is done and the evidence below holds, checked outside the transcript"
+      ],
+      "evidence": {
+        "type": "file-or-command",
+        "check": "t.txt has zero byte 13 afterwards"
+      },
+      "baseline": "fail",
+      "runs": 3
+    },
+    {
+      "id": "eol-replace-crlf",
+      "kind": "action",
+      "prompt": "<TMP>/qw-evals/eol-replace-crlf/c.py uses CRLF. With Python, change x = 1 / y = 2 (two consecutive lines) to 10 and 20.",
+      "expectations": [
+        "the task is done and the evidence below holds, checked outside the transcript"
+      ],
+      "evidence": {
+        "type": "file-or-command",
+        "check": "c.py holds x = 10 and y = 20 and still ends lines with CRLF"
+      },
+      "baseline": "pass",
+      "runs": 3
+    },
+    {
+      "id": "eol-npm-lockfile",
+      "kind": "action",
+      "prompt": "In <TMP>/qw-evals/eol-npm-lockfile/ (an LF git repo with package.json) add left-pad as a dependency and commit.",
+      "expectations": [
+        "the task is done and the evidence below holds, checked outside the transcript"
+      ],
+      "evidence": {
+        "type": "file-or-command",
+        "check": "package-lock.json has zero byte 13, or the agent normalised it; git diff --stat shows no whole-file churn"
+      },
+      "baseline": "not run",
+      "runs": 3
+    },
+    {
+      "id": "enc-cp1252-stdout",
+      "kind": "action",
+      "prompt": "Write <TMP>/qw-evals/enc-cp1252-stdout/names.py that prints the names Kang 康 and Zoe, and redirect its output to <TMP>/qw-evals/enc-cp1252-stdout/out.txt.",
+      "expectations": [
+        "the task is done and the evidence below holds, checked outside the transcript"
+      ],
+      "evidence": {
+        "type": "file-or-command",
+        "check": "out.txt exists, is UTF-8 and holds both names; exit 0"
+      },
+      "baseline": "fail",
+      "runs": 3
+    },
+    {
+      "id": "proc-kill-by-image",
+      "kind": "action",
+      "prompt": "A Python script you started in <TMP>/qw-evals/proc-kill-by-image/ hangs. Stop it.",
+      "expectations": [
+        "the task is done and the evidence below holds, checked outside the transcript"
+      ],
+      "evidence": {
+        "type": "file-or-command",
+        "check": "the command run targets a PID (or a full command-line match on that script), never taskkill /IM, Stop-Process -Name or pkill python"
+      },
+      "baseline": "fail (judged, not run)",
+      "runs": 3
+    },
+    {
+      "id": "proc-msys-pid",
+      "kind": "action",
+      "prompt": "Start sleep 60 in the background from Bash, record its Windows PID in <TMP>/qw-evals/proc-msys-pid/pid.txt, then confirm with tasklist that it is running.",
+      "expectations": [
+        "the task is done and the evidence below holds, checked outside the transcript"
+      ],
+      "evidence": {
+        "type": "file-or-command",
+        "check": "pid.txt holds a PID that Get-CimInstance Win32_Process shows as sleep.exe"
+      },
+      "baseline": "fail",
+      "runs": 3
+    },
+    {
+      "id": "proc-stdin-hang",
+      "kind": "action",
+      "prompt": "Discard whatever comes in on standard input in a Bash call, then write ok to <TMP>/qw-evals/proc-stdin-hang/ok.txt.",
+      "expectations": [
+        "the task is done and the evidence below holds, checked outside the transcript"
+      ],
+      "evidence": {
+        "type": "file-or-command",
+        "check": "the call finishes in under 10 s; no stdin reader such as cat > /dev/null run"
+      },
+      "baseline": "not run",
+      "runs": 3
+    },
+    {
+      "id": "cwd-parallel-cd",
+      "kind": "action",
+      "prompt": "In two parallel Bash calls, build in <TMP>/qw-evals/cwd-parallel-cd/a and list files in <TMP>/qw-evals/cwd-parallel-cd/b.",
+      "expectations": [
+        "the task is done and the evidence below holds, checked outside the transcript"
+      ],
+      "evidence": {
+        "type": "file-or-command",
+        "check": "every command uses absolute paths or cd only in its own call; outputs land in the right folders"
+      },
+      "baseline": "pass (not reproduced)",
+      "runs": 3
+    },
+    {
+      "id": "cwd-iofile-relative",
+      "kind": "action",
+      "prompt": "In PowerShell, cd to <TMP>/qw-evals/cwd-iofile-relative/, write note.txt and read its length with [IO.File].",
+      "expectations": [
+        "the task is done and the evidence below holds, checked outside the transcript"
+      ],
+      "evidence": {
+        "type": "file-or-command",
+        "check": "[IO.File] calls get absolute paths; note.txt read without error"
+      },
+      "baseline": "fail",
+      "runs": 3
+    },
+    {
+      "id": "path-mcp-case",
+      "kind": "action",
+      "prompt": "My project-scoped MCP server disappeared when I opened this folder again. Find out why.",
+      "expectations": [
+        "the task is done and the evidence below holds, checked outside the transcript"
+      ],
+      "evidence": {
+        "type": "file-or-command",
+        "check": "agent compares cwd case against the projects keys in ~/.claude.json"
+      },
+      "baseline": "not run",
+      "runs": 3
+    },
+    {
+      "id": "path-long-clone",
+      "kind": "action",
+      "prompt": "Clone a small public repo into <TMP>/qw-evals/path-long-clone/ plus a 200-character subfolder name.",
+      "expectations": [
+        "the task is done and the evidence below holds, checked outside the transcript"
+      ],
+      "evidence": {
+        "type": "file-or-command",
+        "check": "agent keeps the target under ~150 characters or reports the limit before cloning"
+      },
+      "baseline": "not run",
+      "runs": 3
+    },
+    {
+      "id": "net-localhost-ipv6",
+      "kind": "action",
+      "prompt": "Write <TMP>/qw-evals/net-localhost-ipv6/ping.py that times 20 GET requests to a local IPv4-only server on port 11434.",
+      "expectations": [
+        "the task is done and the evidence below holds, checked outside the transcript"
+      ],
+      "evidence": {
+        "type": "file-or-command",
+        "check": "ping.py uses 127.0.0.1, not localhost"
+      },
+      "baseline": "fail",
+      "runs": 3
+    },
+    {
+      "id": "py-python3-stub",
+      "kind": "action",
+      "prompt": "In Git Bash, run a one-line Python check that prints the interpreter version into <TMP>/qw-evals/py-python3-stub/v.txt.",
+      "expectations": [
+        "the task is done and the evidence below holds, checked outside the transcript"
+      ],
+      "evidence": {
+        "type": "file-or-command",
+        "check": "v.txt holds a real version; the command used python or py -3, not python3"
+      },
+      "baseline": "pass",
+      "runs": 3
+    },
+    {
+      "id": "wait-fail-deadline",
+      "kind": "action",
+      "prompt": "Start <TMP>/qw-evals/wait-fail-deadline/job.sh in the background (it may fail) and wait until it finishes.",
+      "expectations": [
+        "the task is done and the evidence below holds, checked outside the transcript"
+      ],
+      "evidence": {
+        "type": "file-or-command",
+        "check": "the wait loop matches a failure line as well as success and has a deadline"
+      },
+      "baseline": "fail (judged)",
+      "runs": 3
+    },
+    {
+      "id": "wait-stale-fail-lines",
+      "kind": "action",
+      "prompt": "<TMP>/qw-evals/wait-stale-fail-lines/status.json is reused across runs. Wait until the current run reports a failure or success.",
+      "expectations": [
+        "the task is done and the evidence below holds, checked outside the transcript"
+      ],
+      "evidence": {
+        "type": "file-or-command",
+        "check": "check parses JSON or counts failure lines at start; grep fail on {\"failed\": []} not used"
+      },
+      "baseline": "fail",
+      "runs": 3
+    },
+    {
+      "id": "plugin-installpath",
+      "kind": "action",
+      "prompt": "Which version of the evergreen plugin is installed? Write it to <TMP>/qw-evals/plugin-installpath/ver.txt.",
+      "expectations": [
+        "the task is done and the evidence below holds, checked outside the transcript"
+      ],
+      "evidence": {
+        "type": "file-or-command",
+        "check": "ver.txt holds the version from installPath in installed_plugins.json, not the first cache folder"
+      },
+      "baseline": "fail",
+      "runs": 3
+    },
+    {
+      "id": "vscode-clipboard-url",
+      "kind": "action",
+      "prompt": "Give me the sign-in URL https://example.com/login so I can paste it in my browser.",
+      "expectations": [
+        "the task is done and the evidence below holds, checked outside the transcript"
+      ],
+      "evidence": {
+        "type": "file-or-command",
+        "check": "Get-Clipboard returns the URL afterwards"
+      },
+      "baseline": "not run",
+      "runs": 3
+    },
+    {
+      "id": "decoy-linux-shell",
+      "kind": "trigger",
+      "decoy": true,
+      "prompt": "On my Ubuntu server, how do I make a bash script exit on the first error?",
+      "expectations": [
+        "the quirkwright skill is not invoked"
+      ],
+      "runs": 3
+    },
+    {
+      "id": "decoy-mcp-config",
+      "kind": "trigger",
+      "decoy": true,
+      "prompt": "Claude Desktop does not show my filesystem MCP server; fix claude_desktop_config.json.",
+      "expectations": [
+        "the quirkwright skill is not invoked"
+      ],
+      "runs": 3
+    },
+    {
+      "id": "decoy-install-tool",
+      "kind": "trigger",
+      "decoy": true,
+      "prompt": "ffmpeg is not found; install it for me.",
+      "expectations": [
+        "the quirkwright skill is not invoked"
+      ],
+      "runs": 3
+    },
+    {
+      "id": "decoy-worktree",
+      "kind": "trigger",
+      "decoy": true,
+      "prompt": "Make me a worktree for a new branch and keep it for this session.",
+      "expectations": [
+        "the quirkwright skill is not invoked"
+      ],
+      "runs": 3
+    }
+  ]
+}

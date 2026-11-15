@@ -1,0 +1,26 @@
+{
+  "quirkwright": "banner",
+  "route": "comfyui",
+  "host": "local ComfyUI",
+  "model": "FLUX.3 Klein distilled (flux3-image-klein-int8-convrot) + qwen3vl_4b text encoder + flux2-vae",
+  "prompt": "Wide cinematic banner of a craftsman's wooden workbench in a warm old workshop at night. On the bench sit hand tools (chisels, a brass caliper, a small hammer, coiled copper wire, a magnifying loupe) arranged neatly beside a vintage glowing green-on-black computer terminal whose screen shows only abstract glowing lines and blocks. Warm amber lamp light from the left, cool teal glow from the screen on the right, wood shavings, soft depth of field, painterly detailed illustration, rich dark background with plenty of empty space, clean uncluttered composition, no lettering, no signs, no logos.",
+  "negative": "",
+  "seed": 41101,
+  "size": {
+    "w": 1536,
+    "h": 640
+  },
+  "steps": 16,
+  "cfg": 1.0,
+  "sampler": "euler",
+  "scheduler": "simple",
+  "output": {
+    "format": "jpeg",
+    "quality": 88
+  },
+  "candidates": [
+    41101,
+    41102,
+    41103
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "evergreen": "1.0",
+  "name": "quirkwright",
+  "kind": "skill",
+  "main": "SKILL.md",
+  "files": {
+    "research": "RESEARCH.md",
+    "changelog": "CHANGELOG.md",
+    "learnings": "LEARNINGS.md",
+    "tests": "TESTS.md"
+  },
+  "protocol": "plugin",
+  "source": null,
+  "topic": "Windows host behaviour of coding agents: Claude Code Bash and PowerShell tools, Git Bash/MSYS, Write/Edit tools, Python on Windows",
+  "tier": "volatile",
+  "interval_days": 14,
+  "last_checked": "2026-11-15",
+  "next_due": "2026-11-29",
+  "verify_at_use": true,
+  "volatile_claims": [
+    {"claim": "A quoted Bash-tool heredoc halves doubled backslashes", "harness": "claude-code 2.1.x", "shell": "git-bash", "checked": "2026-11-15", "recheck_days": 30, "repro": "cat <<'EOF' with a doubled backslash; count backslashes printed", "verify_at_use": true},
+    {"claim": "Write and Edit tools decode backslash-u escapes", "harness": "claude-code 2.1.x", "shell": "n/a (Write tool)", "checked": "2026-11-15", "recheck_days": 30, "repro": "Write a file holding a backslash-u003c escape; qw.py check flags lost-backslash-u", "verify_at_use": true},
+    {"claim": "Write tool strips trailing spaces", "harness": "claude-code 2.1.x", "shell": "n/a (Write tool)", "checked": "2026-11-15", "recheck_days": 30, "repro": "Write a line ending in two spaces; qw.py check trailing_space_lines", "verify_at_use": true, "unverified": true},
+    {"claim": "Git Bash rewrites leading-slash arguments to Windows paths", "harness": "claude-code 2.1.x", "shell": "git-bash", "checked": "2026-11-15", "recheck_days": 60, "repro": "python -c \"import sys;print(sys.argv)\" /foo", "verify_at_use": true},
+    {"claim": "Python text-mode write produces CRLF on Windows", "harness": "any", "shell": "any", "checked": "2026-11-15", "recheck_days": 90, "repro": "open('t','w').write('a'+chr(10)); count byte 13", "verify_at_use": true},
+    {"claim": "Python stdout to a redirect is cp1252 and fails on CJK", "harness": "any", "shell": "git-bash", "checked": "2026-11-15", "recheck_days": 90, "repro": "python -c \"print(chr(0x5eb7))\" > x.txt; exit code 1", "verify_at_use": true},
+    {"claim": "Bash-tool $! is the MSYS pid, not the Windows pid", "harness": "claude-code 2.1.x", "shell": "git-bash", "checked": "2026-11-15", "recheck_days": 30, "repro": "sleep 60 & echo $!; qw.py pid 'sleep 60'", "verify_at_use": true},
+    {"claim": "A stdin reader in a Bash-tool call hangs to the 120 s timeout", "harness": "claude-code 2.1.x", "shell": "git-bash", "checked": "2026-11-15", "recheck_days": 30, "repro": "cat > /dev/null", "verify_at_use": true, "unverified": true},
+    {"claim": "[IO.File] relative paths ignore Set-Location", "harness": "claude-code 2.1.x", "shell": "powershell-7", "checked": "2026-11-15", "recheck_days": 90, "repro": "Set-Location $env:TEMP; [IO.File]::Exists('n.txt') after New-Item n.txt", "verify_at_use": true},
+    {"claim": "Local-scope MCP servers match the exact project path case", "harness": "claude-code 2.1.x", "shell": "any", "checked": "2026-11-15", "recheck_days": 30, "repro": "claude mcp list from d:\\x and D:\\x", "verify_at_use": true, "unverified": true},
+    {"claim": "localhost resolves ::1 first and is slower than 127.0.0.1 for IPv4 servers", "harness": "any", "shell": "any", "checked": "2026-11-15", "recheck_days": 90, "repro": "curl -w %{time_total} both names", "verify_at_use": true},
+    {"claim": "Foreground sleep is refused; Monitor watches expire after ~5 min", "harness": "claude-code 2.1.x", "shell": "git-bash", "checked": "2026-11-15", "recheck_days": 30, "repro": "sleep 240 in the foreground", "verify_at_use": true, "unverified": true},
+    {"claim": "Plugin cache keeps old versions; installPath names the live one", "harness": "claude-code 2.1.x", "shell": "any", "checked": "2026-11-15", "recheck_days": 30, "repro": "qw.py doctor --plugin <name> vs ls of the cache folder", "verify_at_use": true},
+    {"claim": "A skill installed mid-session is not callable with the Skill tool", "harness": "claude-code 2.1.x", "shell": "any", "checked": "2026-11-15", "recheck_days": 30, "repro": "install a plugin, call its skill", "verify_at_use": true, "unverified": true},
+    {"claim": "Code spans in the VS Code chat panel cannot be copied", "harness": "claude-code vscode extension", "shell": "n/a", "checked": "2026-11-15", "recheck_days": 30, "repro": "try to select a code span in the panel", "verify_at_use": true, "unverified": true}
+  ],
+  "contradiction": null,
+  "events": [],
+  "streak": {"quiet": 0, "pinned_min": 0, "pinned_max": 0, "vau_quiet": 0},
+  "history": [
+    {"date": "2026-11-15", "m": null, "interval_after": 14, "note": "created"}
+  ],
+  "counts": {"learnings": 12, "changes": 1, "research": 1, "tests": 1},
+  "consolidate_every": 25,
+  "tests": {
+    "last_run": "2026-11-15",
+    "harness": "claude-code (single agent, bare baseline)",
+    "env": "baseline",
+    "cases": 26,
+    "passed": 0,
+    "failed": 0,
+    "failing": [],
+    "last_failure": null,
+    "research_after_days": null
+  }
+}

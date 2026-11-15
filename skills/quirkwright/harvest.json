@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "targets": [
+    {"kind": "github-issues", "repo": "anthropics/claude-code", "query": "label:platform:windows heredoc OR CRLF OR backslash OR MSYS OR pid", "keep": "tool-level Windows quirks with a repro; drop feature requests"},
+    {"kind": "web", "url": "https://code.claude.com/docs/en/changelog", "keep": "Bash/PowerShell tool, Write/Edit, Monitor, plugin cache changes"},
+    {"kind": "web", "url": "https://github.com/git-for-windows/git/releases", "keep": "MSYS path conversion, long paths, CRLF defaults"},
+    {"kind": "reddit", "sub": "ClaudeAI", "keep": "Windows host problems with a fix (Git Bash, PowerShell, encoding); drop showcases"}
+  ]
+}

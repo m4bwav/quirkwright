@@ -1,0 +1,16 @@
+{
+  "name": "quirkwright",
+  "owner": {
+    "name": "Mark Rogers"
+  },
+  "metadata": {
+    "description": "Windows host rules and checks for coding agents"
+  },
+  "plugins": [
+    {
+      "name": "quirkwright",
+      "source": "./",
+      "description": "Windows host rules and checks for coding agents: escapes lost in heredocs and file tools, CRLF and cp1252 damage, real pids and kill-by-pid, wait loops with failure match and deadline, path and plugin-cache traps. qw.py check, pid, wait, doctor; hooks shipped off."
+    }
+  ]
+}
