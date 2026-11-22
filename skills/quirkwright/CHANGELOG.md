@@ -2,6 +2,10 @@
 
 Every change to [SKILL.md](SKILL.md) and its scripts, with the reason. Newest first.
 
+## C-004 · 2026-11-21 · 0.2.2 · reload advice
+- Rule 5 and a plugins-and-panel row: skill edits load live or via user-typed `/reload-skills`; plugin changes need user-typed `/reload-plugins`; new session only for hooks, MCP, settings or CLAUDE.md the reload missed; no desktop app restart.
+- because: L-014.
+
 ## C-003 · 2026-11-15 · 0.2.1 · two hooks on
 - `hooks/hooks.json` ships the kill guard (blocks kill by image name) and the byte check on Write/Edit (warns only). The heredoc warning stays off in `hooks.example.json`.
 - because: the owner agreed to these two hooks and declined the heredoc one.
