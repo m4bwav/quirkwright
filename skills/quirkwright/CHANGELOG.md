@@ -2,6 +2,10 @@
 
 Every change to [SKILL.md](SKILL.md) and its scripts, with the reason. Newest first.
 
+## C-005 · 2026-11-21 · 0.2.2 · reload rule marked volatile
+- Rule 5 tells agents to re-test the remote `/reload-plugins` limit before asserting it; two verify-at-use claims (Claude Code 2.1.281, recheck 30 days) in evergreen.json.
+- because: L-015 can go stale with any Claude Code release.
+
 ## C-004 · 2026-11-21 · 0.2.2 · reload advice
 - Rule 5 and a plugins-and-panel row: skill edits load live or via user-typed `/reload-skills`; plugin changes need user-typed `/reload-plugins`; new session only for hooks, MCP, settings or CLAUDE.md the reload missed; no desktop app restart. Over Remote Control `/reload-plugins` is unavailable: plugin changes need a fresh session there.
 - because: L-014, L-015.
