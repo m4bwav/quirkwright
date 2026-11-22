@@ -9,3 +9,4 @@
 - 2026-11-15: 0.2.1 released (kill guard + byte check hooks on, heredoc off), installed. Wiki pages written and verified, not pushed: no wiki repo yet (first page not saved). SKILL.md hooks line fixed (said shipped off).
 - 2026-11-21: 0.2.2 rule 5 "Picking up skill and plugin changes" (/reload-skills, user-typed /reload-plugins, new session only for hooks/MCP/settings/CLAUDE.md; no app restart), L-014, C-004. Not tagged.
 - 2026-11-21: Remote Control: /reload-plugins prints "/reload-plugins isn't available over a remote connection in this session."; /reload-skills works remotely. Rule 5 says remote plugin changes need a fresh session (L-015).
+- 2026-11-21: reload rule marked volatile: observed on Claude Code 2.1.281, two verify-at-use claims (recheck 30 days) in evergreen.json, rule 5 says re-test before asserting (C-005).
