@@ -34,7 +34,9 @@
     {"claim": "A skill installed mid-session is not callable with the Skill tool", "harness": "claude-code 2.1.x", "shell": "any", "checked": "2026-11-15", "recheck_days": 30, "repro": "install a plugin, call its skill", "verify_at_use": true, "unverified": true},
     {"claim": "Code spans in the VS Code chat panel cannot be copied", "harness": "claude-code vscode extension", "shell": "n/a", "checked": "2026-11-15", "recheck_days": 30, "repro": "try to select a code span in the panel", "verify_at_use": true, "unverified": true},
     {"claim": "Skill edits load live or with user-typed /reload-skills; plugin install/update needs user-typed /reload-plugins; agents cannot run slash commands", "harness": "claude-code 2.1.281", "shell": "any", "checked": "2026-11-21", "recheck_days": 30, "repro": "edit a SKILL.md and type /reload-skills; install a plugin and type /reload-plugins", "verify_at_use": true},
-    {"claim": "Over Remote Control /reload-plugins is unavailable ('/reload-plugins isn't available over a remote connection in this session.'); /reload-skills works", "harness": "claude-code 2.1.281 (CLI version on the PC; Remote Control from the phone)", "shell": "n/a", "checked": "2026-11-21", "recheck_days": 30, "repro": "ask the user to type /reload-plugins and /reload-skills from the phone", "verify_at_use": true}
+    {"claim": "Over Remote Control /reload-plugins is unavailable ('/reload-plugins isn't available over a remote connection in this session.'); /reload-skills works", "harness": "claude-code 2.1.281 (CLI version on the PC; Remote Control from the phone)", "shell": "n/a", "checked": "2026-11-21", "recheck_days": 30, "repro": "ask the user to type /reload-plugins and /reload-skills from the phone", "verify_at_use": true},
+    {"claim": "Auto mode refuses an agent edit that widens autoMode or permissions in settings.json, even when the user asks ([Undermining Oversight])", "harness": "claude-code 2.1.x", "shell": "n/a", "checked": "2026-11-22", "recheck_days": 30, "repro": "in auto mode ask the agent to add an autoMode.allow rule", "verify_at_use": true},
+    {"claim": "autoMode.allow takes prose rules plus '$defaults'; settings are read at session start", "harness": "claude-code 2.1.x", "shell": "n/a", "checked": "2026-11-22", "recheck_days": 30, "repro": "qw.py automode apply on a temp settings file; start a session and check a covered action passes", "verify_at_use": true, "unverified": true}
   ],
   "contradiction": null,
   "events": [],
@@ -42,7 +44,7 @@
   "history": [
     {"date": "2026-11-15", "m": null, "interval_after": 14, "note": "created"}
   ],
-  "counts": {"learnings": 12, "changes": 1, "research": 1, "tests": 1},
+  "counts": {"learnings": 17, "changes": 7, "research": 1, "tests": 1},
   "consolidate_every": 25,
   "tests": {
     "last_run": "2026-11-15",

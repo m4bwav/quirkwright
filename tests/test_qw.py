@@ -186,3 +186,56 @@ class HiddenRunTests(unittest.TestCase):
     def test_needs_command(self):
         code, r = run(["hidden-run", "--"])
         self.assertEqual(code, 2)
+
+
+class AutomodeTests(unittest.TestCase):
+    def setUp(self):
+        self.d = tempfile.mkdtemp()
+        self.s = os.path.join(self.d, "settings.json")
+        with open(self.s, "w", encoding="utf-8", newline="\n") as f:
+            json.dump({"theme": "auto", "autoMode": {"allow": ["$defaults", "hand rule"]}}, f)
+        self.home = os.environ.get("QUIRKWRIGHT_HOME")
+        os.environ["QUIRKWRIGHT_HOME"] = self.d  # no automode.json: values only from --set
+
+    def tearDown(self):
+        if self.home is None:
+            os.environ.pop("QUIRKWRIGHT_HOME", None)
+        else:
+            os.environ["QUIRKWRIGHT_HOME"] = self.home
+
+    def am(self, *a):
+        return run(["automode", *a, "--settings", self.s])
+
+    def load(self):
+        with open(self.s, encoding="utf-8") as f:
+            return json.load(f)["autoMode"]["allow"]
+
+    def test_plan_writes_nothing(self):
+        code, r = self.am("plan", "all", "--set", "owner=acme")
+        self.assertEqual(code, 0)
+        self.assertFalse(r["written"])
+        self.assertEqual(self.load(), ["$defaults", "hand rule"])
+        self.assertIn("own-repo-gh", r["added"])
+        self.assertIn("installs", r["missing"])  # needs folders
+        self.assertNotIn("publish", r["added"])  # opt-in
+
+    def test_apply_backup_idempotent_revert(self):
+        code, r = self.am("apply", "own-repo-gh", "--set", "owner=acme", "--apply")
+        self.assertTrue(r["written"])
+        self.assertTrue(os.path.isfile(r["backup"]))
+        allow = self.load()
+        self.assertEqual(allow[:2], ["$defaults", "hand rule"])
+        self.assertTrue(any(x.startswith("[qw:own-repo-gh] ") and "acme" in x for x in allow))
+        code, r = self.am("apply", "own-repo-gh", "--set", "owner=acme", "--apply")
+        self.assertFalse(r["changed"])
+        code, r = self.am("revert", "--apply")
+        self.assertEqual(self.load(), ["$defaults", "hand rule"])
+
+    def test_opt_in_and_extra_rule(self):
+        code, r = self.am("plan", "publish", "--set", "owner=acme", "--rule", "extra text")
+        self.assertIn("publish", r["added"])
+        self.assertIn("[qw:rule] extra text", r["allow_after"])
+
+    def test_unknown_preset(self):
+        code, r = self.am("plan", "nope")
+        self.assertEqual(code, 2)

@@ -388,6 +388,124 @@ def cmd_doctor(args):
     return out(rep, 0)
 
 
+# ---------- automode ----------
+
+PRESETS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "automode_presets.json")
+TAG_RX = re.compile(r"^\[qw:([a-z0-9-]+)\] ")
+
+
+def automode_values(home, sets):
+    vals = {"date": time.strftime("%Y-%m-%d"), "people": "The owner"}
+    p = os.path.join(home, "automode.json") if home else None
+    if p and os.path.isfile(p):
+        with open(p, "r", encoding="utf-8") as f:
+            vals.update(json.load(f))
+    for s in sets or []:
+        k, _, v = s.partition("=")
+        vals[k.strip()] = v.strip()
+    return {k: ", ".join(v) if isinstance(v, list) else str(v) for k, v in vals.items() if v not in (None, "", [])}
+
+
+def automode_rules(presets, names, vals, extra):
+    """Return ([(tag, text)], skipped). names may hold 'all'; opt-in presets need naming."""
+    pre = presets["presets"]
+    chosen = []
+    for n in names:
+        if n == "all":
+            chosen += [k for k, v in pre.items() if not v.get("opt_in") and k not in chosen]
+        elif n not in pre:
+            raise ValueError(n)
+        elif n not in chosen:
+            chosen.append(n)
+    rules, skipped = [], {}
+    for n in chosen:
+        miss = [k for k in pre[n].get("needs", []) if k not in vals]
+        if miss:
+            skipped[n] = miss
+            continue
+        rules.append((n, pre[n]["rule"].format(**vals)))
+    for i, t in enumerate(extra or []):
+        rules.append(("rule" if i == 0 else "rule%d" % (i + 1), t))
+    if rules:
+        try:
+            rules.insert(0, ("preamble", presets["preamble"].format(**vals)))
+        except KeyError:
+            pass
+    return [(tag, "[qw:%s] %s" % (tag, text)) for tag, text in rules], skipped
+
+
+def read_settings(path):
+    if not os.path.isfile(path):
+        return {}, "\n"
+    with open(path, "rb") as f:
+        raw = f.read()
+    eol = "\r\n" if b"\r\n" in raw else "\n"
+    return json.loads(raw.decode("utf-8-sig") or "{}"), eol
+
+
+def write_settings(path, data, eol):
+    if os.path.isfile(path):
+        backup = "%s.bak-%s" % (path, time.strftime("%Y%m%d-%H%M%S"))
+        shutil.copy2(path, backup)
+    else:
+        backup = None
+        os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
+    text = json.dumps(data, indent=2, ensure_ascii=False) + "\n"
+    with open(path, "wb") as f:
+        f.write(text.replace("\n", eol).encode("utf-8"))
+    return backup
+
+
+def cmd_automode(args):
+    path = os.path.expanduser(args.settings)
+    settings, eol = read_settings(path)
+    am = settings.get("autoMode") or {}
+    current = list(am.get("allow") or [])
+    with open(PRESETS_FILE, "r", encoding="utf-8") as f:
+        presets = json.load(f)
+    vals = automode_values(os.environ.get("QUIRKWRIGHT_HOME") or os.path.expanduser("~/.quirkwright"), args.set)
+    if args.action == "list":
+        return out({"settings": path, "values": vals,
+                    "presets": {k: {"needs": v.get("needs", []), "opt_in": bool(v.get("opt_in"))}
+                                for k, v in presets["presets"].items()},
+                    "current_rules": current,
+                    "qw_rules": [r for r in current if TAG_RX.match(r)]})
+    if args.action == "revert":
+        keep = [r for r in current if not TAG_RX.match(r)]
+        removed = [r for r in current if TAG_RX.match(r)]
+        new = keep
+        report = {"removed": removed}
+    else:
+        if not args.presets and not args.rule:
+            return out({"ok": False, "error": "name presets (or all) or give --rule"}, 2)
+        try:
+            rules, skipped = automode_rules(presets, args.presets, vals, args.rule)
+        except ValueError as e:
+            return out({"ok": False, "error": "unknown preset", "preset": str(e),
+                        "presets": list(presets["presets"])}, 2)
+        tags = {t for t, _ in rules}
+        kept = [r for r in current if not (TAG_RX.match(r) and TAG_RX.match(r).group(1) in tags)]
+        if "$defaults" not in kept:
+            kept.insert(0, "$defaults")
+        new = kept + [text for _, text in rules]
+        report = {"added": [t for t, text in rules if text not in current],
+                  "updated": [t for t, text in rules if text not in current and any(
+                      TAG_RX.match(r) and TAG_RX.match(r).group(1) == t for r in current)],
+                  "unchanged": [t for t, text in rules if text in current],
+                  "missing": skipped}
+    report.update({"settings": path, "allow_after": new, "changed": new != current})
+    if args.apply and new != current:
+        settings.setdefault("autoMode", {})["allow"] = new
+        report["backup"] = write_settings(path, settings, eol)
+        report["written"] = True
+        report["note"] = "new sessions read the rules; this one keeps its old ones"
+    else:
+        report["written"] = False
+        if new != current:
+            report["note"] = "dry run: add --apply to write"
+    return out(report)
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(prog="qw.py", description=__doc__.splitlines()[0])
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -410,13 +528,20 @@ def main(argv=None):
     h.add_argument("command", nargs=argparse.REMAINDER)
     d = sub.add_parser("doctor")
     d.add_argument("--plugin")
+    a = sub.add_parser("automode", help="add, preview or remove Claude Code auto mode allow rules (run by the owner)")
+    a.add_argument("action", choices=("list", "plan", "apply", "revert"))
+    a.add_argument("presets", nargs="*", help="preset names, or all (opt-in presets must be named)")
+    a.add_argument("--rule", action="append", help="an extra prose rule (repeatable)")
+    a.add_argument("--set", action="append", help="value for a placeholder, key=value (repeatable)")
+    a.add_argument("--settings", default="~/.claude/settings.json")
+    a.add_argument("--apply", action="store_true", help="write the change (apply and revert are dry runs without it)")
     args = ap.parse_args(argv)
     try:
         sys.stdout.reconfigure(encoding="utf-8")
     except (AttributeError, ValueError):
         pass
     return {"check": cmd_check, "pid": cmd_pid, "wait": cmd_wait, "doctor": cmd_doctor,
-            "hidden-run": cmd_hidden_run}[args.cmd](args)
+            "hidden-run": cmd_hidden_run, "automode": cmd_automode}[args.cmd](args)
 
 
 if __name__ == "__main__":
