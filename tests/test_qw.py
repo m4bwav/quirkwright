@@ -152,3 +152,37 @@ class DoctorTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+@unittest.skipUnless(sys.platform == "win32", "hidden desktops are Windows only")
+class HiddenRunTests(unittest.TestCase):
+    def test_window_never_takes_foreground(self):
+        try:
+            import tkinter  # noqa: F401
+        except ImportError:
+            self.skipTest("no tkinter")
+        src = "import tkinter as t; r=t.Tk(); r.focus_force(); r.after(1500, r.destroy); r.mainloop()"
+        code, r = run(["hidden-run", "--timeout", "20", "--", sys.executable, "-c", src])
+        self.assertEqual(code, 0, r)
+        self.assertEqual(r["result"], "exited")
+        self.assertGreaterEqual(r["windows_seen"], 1)
+        self.assertFalse(r["took_foreground"])
+
+    def test_timeout_kills_own_tree_and_logs(self):
+        log = os.path.join(tempfile.mkdtemp(), "out.log")
+        src = "import sys,time; print('started', flush=True); time.sleep(60)"
+        code, r = run(["hidden-run", "--timeout", "1.5", "--log", log, "--", sys.executable, "-c", src])
+        self.assertEqual(code, 1)
+        self.assertEqual(r["result"], "timeout")
+        self.assertLess(r["elapsed_s"], 10)
+        with open(log, "rb") as f:
+            self.assertIn(b"started", f.read())
+
+    def test_exit_code_passes_through(self):
+        code, r = run(["hidden-run", "--", sys.executable, "-c", "raise SystemExit(3)"])
+        self.assertEqual(code, 1)
+        self.assertEqual(r["exit_code"], 3)
+
+    def test_needs_command(self):
+        code, r = run(["hidden-run", "--"])
+        self.assertEqual(code, 2)
