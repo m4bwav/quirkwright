@@ -1,0 +1,52 @@
+{
+  "_format": "Prose rules for Claude Code settings.json autoMode.allow. {name} placeholders are filled from QUIRKWRIGHT_HOME/automode.json or --set. opt_in presets are never part of 'all'.",
+  "preamble": "Owner: {people}, who holds the {owner} GitHub account, this computer and the machines at {hosts}. The owner authorized the rules tagged [qw:...] on {date}.",
+  "presets": {
+    "own-repo-gh": {
+      "needs": ["owner"],
+      "rule": "GitHub CLI work on {owner} repositories: gh pr merge (squash, merge or rebase, with --delete-branch) once checks pass, gh pr checks --watch chained with merge and git pull, gh release create, gh label create, gh pr comment and edit, gh issue actions, gh api calls against {owner} repositories, gh repo archive, and the release scripts that run these."
+    },
+    "own-repo-public": {
+      "needs": ["owner"],
+      "rule": "Creating {owner} repositories as public (gh repo create {owner}/<name> --public), changing {owner} repository visibility to public, and pushing GitHub wiki pages for {owner} repositories."
+    },
+    "own-uploads": {
+      "needs": ["people"],
+      "rule": "Uploading or updating items {people} already publish under their own accounts (Steam Workshop items, itch.io builds, GitHub release assets), when the item already exists or the session's task is to publish it."
+    },
+    "installs": {
+      "needs": ["folders"],
+      "rule": "Installing third-party code for local work and tests: pip and uv pip install (including git+https URLs and -r requirements.txt), uv sync, npm and npx installs, git clone of public repositories into {folders}, and winget install of developer and build tools."
+    },
+    "network-reads": {
+      "needs": ["hosts"],
+      "rule": "Network reads and downloads: curl, wget and Invoke-WebRequest of public pages and files, yt-dlp for transcripts and media, downloads of models, nodes and tools to local drives, and requests to 127.0.0.1 and {hosts}."
+    },
+    "local-workloads": {
+      "needs": ["hosts"],
+      "rule": "Controlling local workloads: killing a process by pid (Stop-Process -Id, kill, taskkill /PID) that the agent or the owner started, ending stray helper processes the agent started, and interrupting or clearing generation queues on 127.0.0.1 and {hosts}."
+    },
+    "agent-tooling": {
+      "needs": [],
+      "rule": "The owner's agent tooling: nested claude -p sessions, the owner's skill and plugin scripts, writing HANDOFF.md, log.md, ledgers and continue prompts in the owner's projects, scheduled tasks that start Claude Code sessions, and creating and running test fixtures and runner scripts for skills."
+    },
+    "scratch-cleanup": {
+      "needs": [],
+      "rule": "Cleanup of things the agent made: git reset --hard, git checkout -- ., git stash drop, git worktree remove --force and git branch -D in the agent's own worktrees and branches, force-push (prefer --force-with-lease) to the agent's own feature branches, and rm -rf of the agent's worktrees, temporary eval folders, build outputs and generated model files."
+    },
+    "user-env": {
+      "needs": [],
+      "rule": "Setting user-level environment variables (setx, [Environment]::SetEnvironmentVariable(..., 'User')) for the owner's own tools and plugins."
+    },
+    "others-repos": {
+      "needs": ["others"],
+      "opt_in": true,
+      "rule": "Writes to these repositories the owner works on with others, as the owner asked: {others}. Labels, comments, pull requests and merges there."
+    },
+    "publish": {
+      "needs": ["owner"],
+      "opt_in": true,
+      "rule": "Publishing the owner's own packages to registries (npm publish, npx jsr publish, dotnet nuget push) for {owner} packages, after their checks pass."
+    }
+  }
+}
