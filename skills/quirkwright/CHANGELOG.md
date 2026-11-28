@@ -2,6 +2,10 @@
 
 Every change to [SKILL.md](SKILL.md) and its scripts, with the reason. Newest first.
 
+## C-008 · 2026-11-27 · 0.4.1 · log event files
+- The `agent-tooling` auto mode preset names ai-docs/log/ event files beside log.md, since everlast 0.8.0 writes the project log one file per event; AGENTS.md links ai-docs/log/.
+- because: everlast 0.8.0 (a shared log.md made every pair of open PRs conflict).
+
 ## C-007 · 2026-11-22 · 0.4.0 · auto mode
 - Rule 6 and [references/auto-mode.md](references/auto-mode.md): retry `no verdict (error)` once; a real denial covers the outcome; an agent never loosens auto mode itself; categories mapped to presets.
 - `qw.py automode list|plan|apply|revert`: presets in `scripts/automode_presets.json` (two opt-in: `others-repos`, `publish`), values from `QUIRKWRIGHT_HOME/automode.json` or `--set`, dry run without `--apply`, backup before writing, rules tagged `[qw:<preset>]` so `revert` removes them and reruns update in place. 4 tests.
