@@ -28,7 +28,7 @@
     },
     "agent-tooling": {
       "needs": [],
-      "rule": "The owner's agent tooling: nested claude -p sessions, the owner's skill and plugin scripts, writing HANDOFF.md, log.md, ledgers and continue prompts in the owner's projects, scheduled tasks that start Claude Code sessions, and creating and running test fixtures and runner scripts for skills."
+      "rule": "The owner's agent tooling: nested claude -p sessions, the owner's skill and plugin scripts, writing HANDOFF.md, log.md or ai-docs/log/ event files, ledgers and continue prompts in the owner's projects, scheduled tasks that start Claude Code sessions, and creating and running test fixtures and runner scripts for skills."
     },
     "scratch-cleanup": {
       "needs": [],

@@ -7,4 +7,4 @@ Claude Code plugin (one skill) with Windows host rules for coding agents.
 - Never put owner paths, hosts, ports or names in any tracked file, ai-docs/ included. Owner facts go to the sidecar (`QUIRKWRIGHT_HOME/notes.md`).
 - Hooks: kill guard and byte check are on in `hooks/hooks.json`; the heredoc warning stays off (`hooks.example.json`) until the owner asks.
 - Python edits keep line endings; write Python with backslashes via a file tool, not a Bash heredoc.
-- State and handoff: [ai-docs/HANDOFF.md](ai-docs/HANDOFF.md), log [ai-docs/log.md](ai-docs/log.md), index [ai-docs/INDEX.md](ai-docs/INDEX.md).
+- State and handoff: [ai-docs/HANDOFF.md](ai-docs/HANDOFF.md), log [ai-docs/log/](ai-docs/log/) (one file per event), index [ai-docs/INDEX.md](ai-docs/INDEX.md).
